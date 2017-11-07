@@ -18,6 +18,7 @@ QString Find_Config_File(void)
 	if(!Location->exists()) Location = new QFileInfo("/etc/" + QCoreApplication::applicationFilePath() + "/" + Filename);
 	if(!Location->exists()) Location = new QFileInfo("/etc/" + Filename);
 	if(!Location->exists())	Location = new QFileInfo(QDir::homePath() + "/" + Filename);
+	if(!Location->exists())	Location = new QFileInfo("/home/pablo/" + Filename);
 	if(!Location->exists())
 	{
 		qWarning() << "The configuration file doest not exist";
@@ -39,15 +40,16 @@ int main(int argc, char *argv[])
 							   .arg(Config_File);
 		qWarning() << ErrorMessage;
 
-		Config->setValue("DATABASE/Server", HOME_DIR"/Sutra_List.db");
+		Config->setValue("DATABASE/Server", "/home/pablo/Sutra_List.db");
 		Config->setValue("DATABASE/Port", 3306);
 		Config->setValue("DATABASE/User", "username");
 		Config->setValue("DATABASE/Pass", "password");
 
-		Config->setValue("LOCATION/Top_Folder", HOME_DIR"/workspace/QT");
+		Config->setValue("LOCATION/Top_Folder", "/media/sutra/Sutra");
 
 		Config->setValue("SUTRA/Created", 0);
 		Config->setValue("SUTRA/Current", "");
+		Config->sync();
 	}
 	File_Search		Files(Config);
 	Sutra_Database	DB(Config);
@@ -84,8 +86,9 @@ int main(int argc, char *argv[])
 		Config->beginGroup("SUTRA");
 		Config->setValue("Current", Current);
 		Config->endGroup();
+		Config->sync();
 
-		QString Command = QString("mpv %2 > /dev/null").arg(Current);
+		QString Command = QString("mpv -fs %2 > /dev/null").arg(Current);
 		qDebug() << count << Command;
 		system(Command.toStdString().c_str());
 
@@ -97,9 +100,7 @@ int main(int argc, char *argv[])
 
 		count++;
 		if(count==11) break;
-
 	}
-
 
 	return a.exec();
 }

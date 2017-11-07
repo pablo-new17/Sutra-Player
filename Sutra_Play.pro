@@ -22,3 +22,7 @@ SOURCES += main.cpp \
 HEADERS += \
     File_Search.h \
     Sutra_Database.h
+
+target.path = ~/
+INSTALLS += target
+

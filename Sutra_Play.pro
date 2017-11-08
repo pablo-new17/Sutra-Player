@@ -23,6 +23,6 @@ HEADERS += \
     File_Search.h \
     Sutra_Database.h
 
-target.path = ~/
+target.path = /home/pablo
 INSTALLS += target
 

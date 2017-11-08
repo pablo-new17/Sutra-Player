@@ -30,7 +30,7 @@ QString Find_Config_File(void)
 
 int main(int argc, char *argv[])
 {
-	QCoreApplication a(argc, argv);
+//	QCoreApplication a(argc, argv);
 
 	QString			Config_File = Find_Config_File();
 	QSettings*		Config = new QSettings(Config_File, QSettings::IniFormat);
@@ -79,7 +79,6 @@ int main(int argc, char *argv[])
 		Current = DB.Search(Play_Number);
 	}
 
-	int count=0;
 	while(true)
 	{
 		DB.Plaing(Play_Number);
@@ -88,8 +87,8 @@ int main(int argc, char *argv[])
 		Config->endGroup();
 		Config->sync();
 
-		QString Command = QString("mpv -fs %2 > /dev/null").arg(Current);
-		qDebug() << count << Command;
+		QString Command = QString("mpv -fs %2 > /dev/null 2>&1").arg(Current);
+		qDebug() << Command;
 		system(Command.toStdString().c_str());
 
 		if((Current = DB.Search(++Play_Number))=="")
@@ -97,10 +96,8 @@ int main(int argc, char *argv[])
 			Play_Number=1;
 			Current = DB.Search(Play_Number);
 		}
-
-		count++;
-		if(count==11) break;
 	}
 
-	return a.exec();
+//	return a.exec();
+	return 0;
 }

@@ -32,7 +32,7 @@ Sutra_Database::Sutra_Database(QSettings* Config)
 							   .arg(this->m_Database_Server)
 							   .arg(this->m_Database.lastError().text());
 		qCritical() << ErrorMessage;
-		throw ErrorMessage;
+		//throw ErrorMessage;
 	}
 }
 
@@ -73,6 +73,7 @@ bool Sutra_Database::Clean()
 	return true;
 }
 
+
 bool Sutra_Database::Add(QString Filename)
 {
 	QSqlQuery	Query;
@@ -92,6 +93,29 @@ bool Sutra_Database::Add(QString Filename)
 	}
 
 	return true;
+}
+
+QString Sutra_Database::First()
+{
+	QString		Result = "";
+	QSqlQuery	Query;
+
+	Query.prepare("SELECT `檔案名稱` FROM `經文` LIMIT 1");
+	if(Query.exec()==false)
+	{
+		QString ErrorMessage = QString("Unable to exec SQL Command<%1>: %2")
+							   .arg(Query.executedQuery())
+							   .arg(Query.lastError().text());
+		qCritical() << ErrorMessage;
+		return Result;
+	}
+
+	if(Query.next())
+	{
+		Result = Query.value("檔案名稱").toString();
+	}
+
+	return Result;
 }
 int Sutra_Database::Search(QString Filename)
 {

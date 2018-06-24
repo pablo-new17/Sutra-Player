@@ -1,4 +1,5 @@
 #include <QCoreApplication>
+#include <QApplication>
 #include <QDebug>
 #include <QFileInfo>
 #include <QDir>
@@ -6,9 +7,9 @@
 
 #include "File_Search.h"
 #include "Sutra_Database.h"
+#include "Configuartion.h"
 
-
-#define	HOME_DIR	"/home/pablo"
+#define	HOME_DIR	"/home/pi"
 
 QString Find_Config_File(void)
 {
@@ -17,8 +18,8 @@ QString Find_Config_File(void)
 	QFileInfo* Location = new QFileInfo(Filename);
 	if(!Location->exists()) Location = new QFileInfo("/etc/" + QCoreApplication::applicationFilePath() + "/" + Filename);
 	if(!Location->exists()) Location = new QFileInfo("/etc/" + Filename);
+	if(!Location->exists())	Location = new QFileInfo(QString("%1/%2").arg(HOME_DIR).arg(Filename));
 	if(!Location->exists())	Location = new QFileInfo(QDir::homePath() + "/" + Filename);
-	if(!Location->exists())	Location = new QFileInfo("/home/pablo/" + Filename);
 	if(!Location->exists())
 	{
 		qWarning() << "The configuration file doest not exist";
@@ -40,12 +41,12 @@ int main(int argc, char *argv[])
 							   .arg(Config_File);
 		qWarning() << ErrorMessage;
 
-		Config->setValue("DATABASE/Server", "/home/pablo/Sutra_List.db");
+		Config->setValue("DATABASE/Server", QString("%1/%2").arg( HOME_DIR).arg("Sutra_List.db"));
 		Config->setValue("DATABASE/Port", 3306);
 		Config->setValue("DATABASE/User", "username");
 		Config->setValue("DATABASE/Pass", "password");
 
-		Config->setValue("LOCATION/Top_Folder", "/media/sutra/Sutra");
+		Config->setValue("LOCATION/Top_Folder", "/media/sutra");
 
 		Config->setValue("SUTRA/Created", 0);
 		Config->setValue("SUTRA/Current", "");
@@ -54,6 +55,15 @@ int main(int argc, char *argv[])
 	File_Search		Files(Config);
 	Sutra_Database	DB(Config);
 
+	if(argc==2 && QString(argv[1])=="-c")
+	{
+		QApplication a(argc, argv);
+
+		Configuartion w(Config, &DB);
+		w.show();
+
+		return a.exec();
+	}
 
 	Config->beginGroup("SUTRA");
 	bool Created = Config->value("Created").toBool();
@@ -75,9 +85,10 @@ int main(int argc, char *argv[])
 
 	if(Play_Number==0)
 	{
-		Play_Number=1;
-		Current = DB.Search(Play_Number);
+		Current = DB.First();
+		Play_Number = DB.Search(Current);
 	}
+
 
 	while(true)
 	{
@@ -98,6 +109,5 @@ int main(int argc, char *argv[])
 		}
 	}
 
-//	return a.exec();
 	return 0;
 }

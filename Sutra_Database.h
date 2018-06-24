@@ -20,6 +20,7 @@ public:
 	bool			Create(void);
 	bool			Clean(void);
 	bool			Add(QString Filename);
+	QString			First();
 
 	int				Search(QString Filename);
 	QString			Search(int File_id);

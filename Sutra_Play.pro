@@ -1,4 +1,5 @@
 QT -= gui
+QT += widgets
 QT += sql
 
 CONFIG += c++11 console
@@ -17,12 +18,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp \
     File_Search.cpp \
-    Sutra_Database.cpp
+    Sutra_Database.cpp \
+    Configuartion.cpp
 
 HEADERS += \
     File_Search.h \
-    Sutra_Database.h
+    Sutra_Database.h \
+    Configuartion.h
 
 target.path = /home/pablo
 INSTALLS += target
+
+FORMS += \
+    Configuartion.ui
 

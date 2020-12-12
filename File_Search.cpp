@@ -11,7 +11,7 @@ QStringList File_Search::getFiles() const
 void File_Search::Search(QString Folder)
 {
 	QStringList File_Filter;
-	QDir		Top(Folder);
+	QDir Top(Folder);
 
 	Top.setFilter(QDir::AllDirs | QDir::Files | QDir::NoSymLinks | QDir::NoDotAndDotDot);
 	Top.setSorting(QDir::Name);
@@ -36,17 +36,4 @@ File_Search::File_Search(QString Location)
 	this->m_Files.clear();
 	Search(Location);
 }
-File_Search::File_Search(QSettings* Config)
-{
-	QString Location = ".";
 
-	if(Config->childGroups().contains("LOCATION"))
-	{
-		Config->beginGroup("LOCATION");
-		Location = Config->value("Top_Folder").toString();
-		Config->endGroup();
-	}
-
-	this->m_Files.clear();
-	Search(Location);
-}

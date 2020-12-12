@@ -1,6 +1,7 @@
 QT -= gui
 QT += widgets
 QT += sql
+QT += network
 
 CONFIG += c++11 console
 CONFIG -= app_bundle
@@ -17,18 +18,25 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += main.cpp \
+    Configuration.cpp \
     File_Search.cpp \
-    Sutra_Database.cpp \
-    Configuartion.cpp
+    GPIO_sysfs.cpp \
+    MainWindow.cpp \
+    Network_Utility.cpp \
+    Sutra_Database.cpp
 
 HEADERS += \
+    Configuration.h \
     File_Search.h \
-    Sutra_Database.h \
-    Configuartion.h
+    GPIO_sysfs.h \
+    MainWindow.h \
+    Network_Utility.h \
+    Sutra_Database.h
 
-target.path = /home/pablo
+target.path = /home/pi
 INSTALLS += target
 
 FORMS += \
-    Configuartion.ui
+    Configuartion_dialoh.ui \
+    MainWindow.ui
 

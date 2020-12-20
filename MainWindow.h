@@ -7,6 +7,7 @@
 #include "GPIO_sysfs.h"
 #include "Configuration.h"
 #include "Sutra_Database.h"
+#include "MediaPlayer.h"
 
 namespace Ui {
 	class MainWindow;
@@ -35,6 +36,8 @@ private:
 	int			m_Count_Down = 31;
 	bool			m_Pause_Count;
 
+	MediaPlayer*		m_Player;
+
 private slots:
 	void Show_IP_Address();
 
@@ -54,6 +57,8 @@ private slots:
 	void Play_Start();
 
 	void Add_Media_Files(QString Folder);
+
+	void on_pushButton_clicked();
 
 protected:
 	void timerEvent(QTimerEvent* event) override;

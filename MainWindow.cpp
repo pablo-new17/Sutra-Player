@@ -11,6 +11,10 @@
 
 #define TOP_FOLDER	"/home/pi"
 
+#ifdef	FOR_RASPBERRYPI
+#define GPIO_ENABLED
+#endif
+
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow)
@@ -18,8 +22,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 	this->m_Play_Number = -1;
 
+#ifdef	GPIO_ENABLED
 	this->m_GPIO = new GPIO_sysfs(12, GPIO_DIRECTION_IN, this);
 	connect(this->m_GPIO, &GPIO_sysfs::Input_Value_Changed, this, &MainWindow::Play_Next);
+#endif
 
 	this->m_Config = new Configuration(TOP_FOLDER, this);
 
@@ -36,6 +42,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	startTimer(1000);
 
 	connect(this, &MainWindow::Playback, this, &MainWindow::Play_Start);
+
+	this->m_Player = new MediaPlayer(this);
+
+	connect(this->m_Player, &MediaPlayer::Finished, this, &MainWindow::Play_Next);
 }
 
 MainWindow::~MainWindow()
@@ -188,34 +198,27 @@ void MainWindow::Play_Next()
 {
 	this->m_Play_Number++;
 
-	qDebug() << "Play_Next" << this->m_Play_Number;
-
-	this->m_DB->Plaing(this->m_Play_Number);
+	this->Play_Start();
 }
 
 void MainWindow::Play_Start()
 {
-	qDebug() << "Play_Start" << this->m_Play_Number;
+	QString Filename = this->m_DB->Search(this->m_Play_Number);
+
+	qDebug() << "Play_Next" << this->m_Play_Number << Filename;
+
+	if(Filename.isEmpty())
+	{
+		this->m_Play_Number = 1;
+
+		Filename = this->m_DB->Search(this->m_Play_Number);
+	}
 
 	this->m_DB->Plaing(this->m_Play_Number);
-	//	while(true)
-	//	{
-	//		w.getDB()->Plaing(Play_Number);
-	//		w.getConfig()->beginGroup("SUTRA");
-	//		w.getConfig()->setValue("Current", Current);
-	//		w.getConfig()->endGroup();
-	//		w.getConfig()->sync();
 
-	//		QString Command = QString("DISPLAY=:0.0 mpv -fs %2 > /dev/null 2>&1").arg(Current);
-	//		qDebug() << Command;
-	//		system(Command.toStdString().c_str());
+	this->Show_Current_Media();
 
-	//		if((Current = w.getDB()->Search(++Play_Number))=="")
-	//		{
-	//			Play_Number=1;
-	//			Current = w.getDB()->Search(Play_Number);
-	//		}
-	//	}
+	this->m_Player->Play(Filename);
 }
 
 void MainWindow::Add_Media_Files(QString Folder)
@@ -272,4 +275,9 @@ void MainWindow::timerEvent(QTimerEvent* event)
 		else
 			ui->statusbar->showMessage(QString("將於 %1 秒後自動撥放").arg(this->m_Count_Down));
 	}
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+	this->m_Player->Cancel();
 }

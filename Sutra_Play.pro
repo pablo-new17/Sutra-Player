@@ -22,6 +22,7 @@ SOURCES += main.cpp \
     File_Search.cpp \
     GPIO_sysfs.cpp \
     MainWindow.cpp \
+    MediaPlayer.cpp \
     Network_Utility.cpp \
     Sutra_Database.cpp
 
@@ -30,6 +31,7 @@ HEADERS += \
     File_Search.h \
     GPIO_sysfs.h \
     MainWindow.h \
+    MediaPlayer.h \
     Network_Utility.h \
     Sutra_Database.h
 

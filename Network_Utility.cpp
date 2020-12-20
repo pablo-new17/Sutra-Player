@@ -1,4 +1,5 @@
 #include <QDebug>
+#include <QDebugStateSaver>
 #include <QNetworkInterface>
 
 #include "Network_Utility.h"
@@ -69,7 +70,8 @@ Network_Utility::Network_Utility(QObject *parent) : QObject(parent)
 		}
 
 		this->m_All_Devices.append(New_Device);
-		qDebug() << New_Device ;
+		qDebug() << New_Device.Device_Name << New_Device.IP_Address;
+//		qDebug() << New_Device;
 	}
 
 }
